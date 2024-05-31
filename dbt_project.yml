@@ -1,0 +1,10 @@
+name: 'rabbit_in_a_dbt'
+version: '0.1.0'
+
+config-version: 2
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+log-path: "logs"
+
+require-dbt-version: [">=1.2.0", "<2.0.0"]
