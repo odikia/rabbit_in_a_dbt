@@ -29,6 +29,24 @@ The `get_column_stats` macro generates SQL queries to get statistics about colum
 
 **Note: you can skip a column by setting its value to None.**
 
+### Example DBT usage
+
+```sql
+{{ config(
+    materialized='table'
+) }}
+
+{% set model_name = 'os_extract_specimen' %}
+
+{% set column_exceptions = {
+    'ops_identifier': {'max_entities': 5, 'min_count': 1},
+    'ppid': {'max_entities': 5, 'min_count': 10},
+    'specimen_id': {'max_entities': 5, 'min_count': 1}
+} %}
+
+{{ rabbit_in_a_dbt.get_column_stats(model_name, default_max_entities=10, default_min_count=5, column_exceptions=column_exceptions) }}
+```
+
 ### How It Works
 - Get Columns: The macro begins by getting a list of all columns in the model table.
 - Initialize CTE Statements List: A list named cte_statements is initialized. This list will hold the Common Table Expressions (CTEs) that are generated for each column.
