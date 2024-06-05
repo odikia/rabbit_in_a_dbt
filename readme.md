@@ -2,7 +2,7 @@
 
 This DBT package recreates some of the key functions of the "rabbit" tools in the OHDSI toolkit, but streamlined and optimized for use in a dbt project.
 
-## just at the development phase
+## Package at the development phase
 
 https://docs.getdbt.com/guides/building-packages?step=1
 https://docs.getdbt.com/blog/so-you-want-to-build-a-package
@@ -12,12 +12,23 @@ https://docs.getdbt.com/blog/so-you-want-to-build-a-package
 
 # Macros
 ## get_column_stats
-The get_column_stats macro generates SQL queries to get statistics about columns in a database table. The result of this macro is a SQL query that gets the top entities by count for each column in a table, with the ability to specify column-specific values for max_entities and min_count, and the ability to skip certain columns.
+The `get_column_stats` macro generates SQL queries to get statistics about columns in a database table. The result of this macro is a SQL query that gets the top entities by count for each column in a table, with the ability to specify column-specific values for max_entities and min_count, and the ability to skip certain columns.
 ### Parameters
 - model: The name of the database table.
-- default_max_entities: The default maximum number of entities (default is 1000).
-- default_min_count: The default minimum count (default is 5).
-- column_exceptions: A dictionary that can contain column-specific values for max_entities and min_count.
+- default_max_entities: The default maximum number of entities for each column in the model to be displayed (default is 1000).
+- min_count: The default minimum count required per cell per column in the model in order to be displayed (default is 5).
+- column_exceptions: A dictionary that can contain column-specific values for max_entities and min_count. The structure must conform to the following:
+
+```jinja
+{% set column_exceptions ={
+  'column_name1': {'max_entities': 100, 'min_count': 10},
+  'column_name2': {'max_entities': 50, 'min_count': 2},
+  'column_name3': None
+} %}
+```
+
+**Note: you can skip a column by setting its value to None.**
+
 ### How It Works
 - Get Columns: The macro begins by getting a list of all columns in the model table.
 - Initialize CTE Statements List: A list named cte_statements is initialized. This list will hold the Common Table Expressions (CTEs) that are generated for each column.
