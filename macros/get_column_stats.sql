@@ -1,12 +1,12 @@
-{% macro get_column_stats(model, default_max_entities=1000, default_min_count=5, column_exceptions={}) %}
+{% macro get_column_stats(model, max_entities=1000, min_count=5, column_exceptions={}) %}
     {% set columns = adapter.get_columns_in_relation(ref(model)) %}
     {% set cte_statements = [] %}
     
     {% for column in columns %}
         {% set column_name = column.name %}
         
-        {% set max_entities = column_exceptions.get(column_name, {}).get('max_entities', default_max_entities) %}
-        {% set min_count = column_exceptions.get(column_name, {}).get('min_count', default_min_count) %}
+        {% set max_entities = column_exceptions.get(column_name, {}).get('max_entities', max_entities) %}
+        {% set min_count = column_exceptions.get(column_name, {}).get('min_count', min_count) %}
         
         {% set cte_statement %}
             entity_counts_{{ loop.index }} as (
