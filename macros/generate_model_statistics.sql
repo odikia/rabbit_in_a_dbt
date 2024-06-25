@@ -1,4 +1,4 @@
-{% macro generate_model_statistics(models, run_notes, dbt_project_name) %}
+{% macro generate_model_statistics(models, run_notes, dbt_project_name, development_phase) %}
     {% set queries = [] %}
     
     {% for model in models %}
@@ -10,6 +10,7 @@
             current_timestamp as model_run_ts,
             '{{ run_notes }}' as run_notes,
             '{{ dbt_project_name }}' as dbt_project_name
+            '{{ development_phase }}' as development_phase
         {% endset %}
         
         {% do queries.append(query) %}
