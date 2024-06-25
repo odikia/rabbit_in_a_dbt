@@ -9,8 +9,64 @@ https://docs.getdbt.com/blog/so-you-want-to-build-a-package
 
 ![image](https://github.com/odikia/rabbit_in_a_dbt/assets/20713572/edbc776a-c05b-41c2-9cf0-352c0662f7e8)
 
+### How It Works
+- Initialize Query List: Begins by initializing an empty list called queries to store individual SQL queries for each model.
+- Loop Over Models: Iterates over each model provided in the models list.
+  - Generate Query for Each Model: Constructs a SQL query that selects:
+    - The model name.
+    - The run order specified for the model.
+    - The row count from the model's table.
+    - The current timestamp to capture when the model was run.
+    - Run notes provided in the macro call.
+    - The dbt project name.
+    - The phase of development for the model
+  - Append to Queries List: Each constructed query is appended to the `queries` list.
+- Combine Queries: After all individual model queries are created, they are combined into a single SQL query using 'union all'.
+- Return Final Query: Outputs the final combined query, ready for execution.
+
+This macro is useful for logging and auditing model runs within a dbt project, providing a quick overview of each model's state at the time of the run.
 
 # Macros
+## generate_model_statistics
+### Overview
+The `generate_model_statistics` macro compiles statistics for multiple models in a dbt project. It generates SQL queries that compute basic statistics, such as row counts for specified models, and captures execution details like timestamps and specific run notes.
+### Parameters
+- **`models`**: A list of dictionaries, each specifying a model and its order in the run sequence.
+- **`run_notes`**: A string containing notes or comments about the current run, which will be logged with each model's statistics.
+- **`dbt_project_name`**: The name of the dbt project to which these models belong.
+- **`development_phase`**: The phase of the projects development. Can be version number, or nomenclature, but try to be descriptive but succinct (version number is best, using major, minor, hotfix, x.x.x!).
+
+### Structure for `models` Parameter
+The `models` parameter expects a list of dictionaries with the following keys:
+```yaml
+models:
+  - model_name: 'patients'
+    run_order: 1
+  - model_name: 'drugs'
+    run_order: 2
+  - model_name: 'procedures'
+    run_order: 3
+
+### Example DBT Usage
+
+```jinja
+{{ config(
+    materialized='table'
+) }}
+
+{% set models = [
+    {'model_name': 'daily_sales', 'run_order': 1},
+    {'model_name': 'customer_demographics', 'run_order': 2}
+] %}
+
+{{ rabbit_in_a_dbt.generate_model_statistics(
+  models=models,
+  run_notes='Initial run for daily updates',
+  dbt_project_name='wali_demographics',
+  development_phase='Development'
+) }}
+```
+
 ## get_column_stats
 The `get_column_stats` macro generates SQL queries to get statistics about columns in a database table. The result of this macro is a SQL query that gets the top entities by count for each column in a table, with the ability to specify column-specific values for max_entities and min_count, and the ability to skip certain columns.
 ### Parameters
@@ -31,7 +87,7 @@ The `get_column_stats` macro generates SQL queries to get statistics about colum
 
 ### Example DBT usage
 
-```sql
+```jinja
 {{ config(
     materialized='table'
 ) }}
@@ -57,3 +113,7 @@ The `get_column_stats` macro generates SQL queries to get statistics about colum
 - Append CTE Statement: The CTE statement is then appended to the cte_statements list.
 - Combine CTE Statements: After the loop, all the CTE statements are combined into a single string with commas in between.
 - Generate Final Query: Finally, the macro generates the final query. This query selects all rows from each CTE and combines them using the UNION ALL operator.
+
+# Special Note:
+This documentation was created with the assistance of ChatGPT 4o:
+- https://chatgpt.com/share/cf63a5d6-57f9-4bdd-a1d3-c17ede214d5a
