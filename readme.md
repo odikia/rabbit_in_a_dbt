@@ -9,23 +9,6 @@ https://docs.getdbt.com/blog/so-you-want-to-build-a-package
 
 ![image](https://github.com/odikia/rabbit_in_a_dbt/assets/20713572/edbc776a-c05b-41c2-9cf0-352c0662f7e8)
 
-### How It Works
-- Initialize Query List: Begins by initializing an empty list called queries to store individual SQL queries for each model.
-- Loop Over Models: Iterates over each model provided in the models list.
-  - Generate Query for Each Model: Constructs a SQL query that selects:
-    - The model name.
-    - The run order specified for the model.
-    - The row count from the model's table.
-    - The current timestamp to capture when the model was run.
-    - Run notes provided in the macro call.
-    - The dbt project name.
-    - The phase of development for the model
-  - Append to Queries List: Each constructed query is appended to the `queries` list.
-- Combine Queries: After all individual model queries are created, they are combined into a single SQL query using 'union all'.
-- Return Final Query: Outputs the final combined query, ready for execution.
-
-This macro is useful for logging and auditing model runs within a dbt project, providing a quick overview of each model's state at the time of the run.
-
 # Macros
 ## generate_model_statistics
 ### Overview
@@ -67,6 +50,23 @@ models:
   development_phase='Development'
 ) }}
 ```
+
+### How It Works
+- Initialize Query List: Begins by initializing an empty list called queries to store individual SQL queries for each model.
+- Loop Over Models: Iterates over each model provided in the models list.
+  - Generate Query for Each Model: Constructs a SQL query that selects:
+    - The model name.
+    - The run order specified for the model.
+    - The row count from the model's table.
+    - The current timestamp to capture when the model was run.
+    - Run notes provided in the macro call.
+    - The dbt project name.
+    - The phase of development for the model
+  - Append to Queries List: Each constructed query is appended to the `queries` list.
+- Combine Queries: After all individual model queries are created, they are combined into a single SQL query using 'union all'.
+- Return Final Query: Outputs the final combined query, ready for execution.
+
+This macro is useful for logging and auditing model runs within a dbt project, providing a quick overview of each model's state at the time of the run.
 
 ## get_column_stats
 The `get_column_stats` macro generates SQL queries to get statistics about columns in a database table. The result of this macro is a SQL query that gets the top entities by count for each column in a table, with the ability to specify column-specific values for max_entities and min_count, and the ability to skip certain columns.
