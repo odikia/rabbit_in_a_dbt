@@ -115,6 +115,6 @@ The `get_column_stats` macro generates SQL queries to get statistics about colum
 - Combine CTE Statements: After the loop, all the CTE statements are combined into a single string with commas in between.
 - Generate Final Query: Finally, the macro generates the final query. This query selects all rows from each CTE and combines them using the UNION ALL operator.
 
-# Special Note:
+## Special Note:
 This documentation was created with the assistance of ChatGPT 4o:
 - https://chatgpt.com/share/cf63a5d6-57f9-4bdd-a1d3-c17ede214d5a
