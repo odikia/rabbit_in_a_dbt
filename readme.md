@@ -46,6 +46,7 @@ models:
     run_order: 2
   - model_name: 'procedures'
     run_order: 3
+```
 
 ### Example DBT Usage
 
