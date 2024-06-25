@@ -9,7 +9,7 @@
             (select count(*) as row_count from {{ ref(model.model_name) }}) as row_count,
             current_timestamp as model_run_ts,
             '{{ run_notes }}' as run_notes,
-            '{{ dbt_project_name }}' as dbt_project_name
+            '{{ dbt_project_name }}' as dbt_project_name,
             '{{ development_phase }}' as development_phase
         {% endset %}
         
